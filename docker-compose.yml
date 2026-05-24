@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  frontend:
+    image: romannunezg/innovatech-frontend:latest
+    container_name: innovatech-frontend
+    restart: always
+    ports:
+      
+"80:80"
+
+networks:
+  default:
+    driver: bridge
