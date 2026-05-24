@@ -4,24 +4,23 @@ on:
   workflow_run:
     workflows: ["Build & Push Frontend (Docker Hub)"]
     types:
-      
-completed
+      - completed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     if: github.event.workflow_run.conclusion == 'success'
+
     env:
       AWS_REGION: us-east-1
-      FRONTEND_INSTANCE_ID: i-XXXXXXXXXXXXXXXXX
+      FRONTEND_INSTANCE_ID: i-XXXXXXXXXXXXXXXXX #Reemplazar despues por el id de la EC2
       FRONTEND_APP_DIR: /home/ec2-user/frontend
-    steps:
-      
-name: Descargar código
-      uses: actions/checkout@v4
 
+    steps:
+    - name: Descargar código
+      uses: actions/checkout@v4
       
-name: Configurar AWS credentials
+    - name: Configurar AWS credentials
       run: |
         mkdir -p ~/.aws
         cat > ~/.aws/credentials << EOF[default]
@@ -33,8 +32,15 @@ name: Configurar AWS credentials
         region=${AWS_REGION}
         output=json
         EOF
-
-      
-name: Deploy frontend por SSM
+        
+    - name: Deploy frontend por SSM
       run: |
-        aws ssm send-command \--region "${AWS_REGION}" \--document-name "AWS-RunShellScript" \--instance-ids "${FRONTEND_INSTANCE_ID}" \--parameters commands="["cd ${FRONTEND_APP_DIR}","docker compose pull","docker compose up -d"]"
+          aws ssm send-command \
+            --region "${AWS_REGION}" \
+            --document-name "AWS-RunShellScript" \
+            --instance-ids "${FRONTEND_INSTANCE_ID}" \
+            --parameters commands='[
+              "cd '"${FRONTEND_APP_DIR}"'",
+              "docker compose pull",
+              "docker compose up -d"
+            ]'

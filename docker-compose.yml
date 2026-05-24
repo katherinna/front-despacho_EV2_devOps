@@ -1,13 +1,16 @@
-version: "3.8"
-
 services:
   frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_VENTAS: ${VITE_API_VENTAS}
+        VITE_API_DESPACHOS: ${VITE_API_DESPACHOS}
     image: romannunezg/innovatech-frontend:latest
     container_name: innovatech-frontend
     restart: always
     ports:
-      
-"80:80"
+      - "80:80"
 
 networks:
   default:
