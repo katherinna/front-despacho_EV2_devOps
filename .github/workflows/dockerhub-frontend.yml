@@ -25,5 +25,8 @@ jobs:
 
       - name: Construir y publicar imagen Frontend
         run: |
-          docker build -t romannunezg/innovatech-frontend:latest .
+          docker build \
+            --build-arg VITE_API_VENTAS=${{ secrets.VITE_API_VENTAS }} \
+            --build-arg VITE_API_DESPACHOS=${{ secrets.VITE_API_DESPACHOS }} \
+            -t romannunezg/innovatech-frontend:latest .
           docker push romannunezg/innovatech-frontend:latest
