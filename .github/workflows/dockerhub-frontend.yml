@@ -10,34 +10,20 @@ permissions:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
     steps:
-      
-name: Descargar código
-      uses: actions/checkout@v4,
+      - name: Descargar código
+        uses: actions/checkout@v4
 
-      
-name: Configurar Docker Buildx
-      uses: docker/setup-buildx-action@v3,
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      
-name: Iniciar sesión en Docker Hub
-      run: |
-        echo "${{ secrets.DOCKERHUB_TOKEN }}" \| docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin,
+      - name: Iniciar sesión en Docker Hub
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" \
+          | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      
-name: Construir y publicar imagen Frontend
-      run: |
-        docker build \-t romannunezg/innovatech-frontend:latest .
-        docker push romannunezg/innovatech-frontend:latest,
-:thumbsup:
-Haz clic para reaccionar
-:white_check_mark:
-Haz clic para reaccionar
-:100:
-Haz clic para reaccionar
-Agregar reacción
-Responder
-Reenviar
-Más
-
-Mensaje @Kathe
+      - name: Construir y publicar imagen Frontend
+        run: |
+          docker build -t romannunezg/innovatech-frontend:latest .
+          docker push romannunezg/innovatech-frontend:latest
