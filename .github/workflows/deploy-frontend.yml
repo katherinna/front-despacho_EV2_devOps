@@ -13,36 +13,34 @@ jobs:
 
     env:
       AWS_REGION: us-east-1
-      FRONTEND_INSTANCE_ID: i-092863b1132bf75e7
+      FRONTEND_INSTANCE_ID: i-092863b1132bf75e7 #Reemplazar despues por el id de la EC2
       FRONTEND_APP_DIR: /home/ec2-user/frontend
 
     steps:
-      - name: Descargar código
-        uses: actions/checkout@v4
+    - name: Descargar código
+      uses: actions/checkout@v4
 
-      - name: Configurar AWS credentials
-        run: |
-          mkdir -p ~/.aws
-          cat > ~/.aws/credentials << EOF
-          [default]
-          aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_session_token=${{ secrets.AWS_SESSION_TOKEN }}
-          EOF
-          cat > ~/.aws/config << EOF
-          [default]
-          region=${AWS_REGION}
-          output=json
-          EOF
+    - name: Configurar AWS credentials
+      run: |
+        mkdir -p ~/.aws
+        cat > ~/.aws/credentials << EOF[default]
+        aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_session_token=${{ secrets.AWS_SESSION_TOKEN }}
+        EOF
+        cat > ~/.aws/config << EOF[default]
+        region=${AWS_REGION}
+        output=json
+        EOF
 
-      - name: Deploy frontend por SSM
-        run: |
+    - name: Deploy frontend por SSM
+      run: |
           aws ssm send-command \
             --region "${AWS_REGION}" \
             --document-name "AWS-RunShellScript" \
             --instance-ids "${FRONTEND_INSTANCE_ID}" \
-            --parameters commands="[
-              \"cd ${FRONTEND_APP_DIR}\",
-              \"docker compose pull\",
-              \"docker compose up -d\"
-            ]"
+            --parameters commands='[
+              "cd '"${FRONTEND_APP_DIR}"'",
+              "docker compose pull",
+              "docker compose up -d"
+            ]'
